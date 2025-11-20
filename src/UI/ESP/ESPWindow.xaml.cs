@@ -458,21 +458,9 @@ namespace LoneEftDmaRadar.UI.ESP
             var name = player.Name ?? "Unknown";
             var text = $"{name} ({distance:F0}m)";
             
-            // Measure text
             var textWidth = _textFont.MeasureText(text);
             var textHeight = _textFont.Size;
             
-            // Draw background
-            var backgroundRect = new SKRect(
-                screenPos.X - textWidth / 2 - 2,
-                screenPos.Y - 20,
-                screenPos.X + textWidth / 2 + 2,
-                screenPos.Y - 20 + textHeight + 2
-            );
-            
-            canvas.DrawRect(backgroundRect, _textBackgroundPaint);
-            
-            // Draw text
             canvas.DrawText(text, screenPos.X - textWidth / 2, screenPos.Y - 20 + textHeight, _textFont, _textPaint);
         }
 

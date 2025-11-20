@@ -106,15 +106,6 @@
                 </StackPanel>
             </GroupBox>
 
-            <!-- Camera Info -->
-            <GroupBox Header="Camera / FOV"
-                      Margin="0,0,0,12">
-                <TextBlock Text="Camera FOV is now automatically detected from game memory!"
-                           VerticalAlignment="Center"
-                           FontStyle="Italic"
-                           Foreground="LightGreen" />
-            </GroupBox>
-
             <!-- Performance Settings -->
             <GroupBox Header="Performance"
                       Margin="0,0,0,12">
@@ -132,7 +123,7 @@
                                    FontSize="10"
                                    Margin="8,0" />
                     </WrapPanel>
-                    <TextBlock Text="Note: Lower FPS = Better performance. Set to 0 for VSync (monitor refresh rate)."
+                    <TextBlock Text="Note: Set to 0 for VSync (monitor refresh rate)."
                                TextWrapping="Wrap"
                                Foreground="Gray"
                                FontSize="10"
