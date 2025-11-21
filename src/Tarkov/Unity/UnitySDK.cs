@@ -52,10 +52,10 @@ namespace LoneEftDmaRadar.Tarkov.Unity
 
             public readonly struct Camera
             {
-                public const uint ViewMatrix = 0x118;
-                public const uint FOV = 0x198;
-                public const uint AspectRatio = 0x508;
-                public const uint ZoomLevel = 0xD8;
+                public const uint ViewMatrix = 0x120;
+                public const uint FOV = 0x1A0;
+                public const uint AspectRatio = 0x510;
+                public const uint ZoomLevel = 0xE0;
             }
 
             public static readonly uint[] GameWorldChain =
