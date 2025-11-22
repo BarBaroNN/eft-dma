@@ -26,6 +26,7 @@ SOFTWARE.
  *
 */
 
+using LoneEftDmaRadar.UI.Misc;
 using LoneEftDmaRadar.Web.ProfileApi;
 using LoneEftDmaRadar.Web.ProfileApi.Schema;
 using Microsoft.Extensions.DependencyInjection;
@@ -109,7 +110,7 @@ namespace LoneEftDmaRadar.Web.TarkovDev.Profiles
                 long epoch = jsonDoc.RootElement.GetProperty("updated").GetInt64();
                 var result = JsonSerializer.Deserialize<ProfileData>(json, IProfileApiProvider.JsonOptions) ??
                     throw new InvalidOperationException("Failed to deserialize response");
-                Debug.WriteLine($"[TarkovDevProvider] Got Profile '{accountId}'!");
+                DebugLogger.LogDebug($"[TarkovDevProvider] Got Profile '{accountId}'!");
                 return new()
                 {
                     Data = result,
@@ -119,7 +120,7 @@ namespace LoneEftDmaRadar.Web.TarkovDev.Profiles
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[TarkovDevProvider] Failed to get profile: {ex}");
+                DebugLogger.LogDebug($"[TarkovDevProvider] Failed to get profile: {ex}");
                 return null;
             }
         }

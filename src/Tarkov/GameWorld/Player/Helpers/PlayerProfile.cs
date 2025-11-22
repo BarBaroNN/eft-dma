@@ -26,6 +26,7 @@ SOFTWARE.
  *
 */
 
+using LoneEftDmaRadar.UI.Misc;
 using LoneEftDmaRadar.Web.ProfileApi.Schema;
 using LoneEftDmaRadar.Web.Twitch;
 
@@ -166,7 +167,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"ERROR updating Member Category for '{Name}': {ex}");
+                DebugLogger.LogDebug($"ERROR updating Member Category for '{Name}': {ex}");
             }
         }
 

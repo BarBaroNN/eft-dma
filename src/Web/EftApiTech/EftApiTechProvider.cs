@@ -26,6 +26,7 @@ SOFTWARE.
  *
 */
 
+using LoneEftDmaRadar.UI.Misc;
 using LoneEftDmaRadar.Web.ProfileApi;
 using LoneEftDmaRadar.Web.ProfileApi.Schema;
 using Microsoft.Extensions.DependencyInjection;
@@ -130,7 +131,7 @@ namespace LoneEftDmaRadar.Web.EftApiTech
                 string raw = data.GetRawText();
                 var result = JsonSerializer.Deserialize<ProfileData>(raw, IProfileApiProvider.JsonOptions) ??
                     throw new InvalidOperationException("Failed to deserialize response");
-                Debug.WriteLine($"[EftApiTechProvider] Got Profile '{accountId}'!");
+                DebugLogger.LogDebug($"[EftApiTechProvider] Got Profile '{accountId}'!");
                 return new()
                 {
                     Data = result,
@@ -140,7 +141,7 @@ namespace LoneEftDmaRadar.Web.EftApiTech
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[EftApiTechProvider] Failed to get profile: {ex}");
+                DebugLogger.LogDebug($"[EftApiTechProvider] Failed to get profile: {ex}");
                 return null;
             }
         }

@@ -27,6 +27,7 @@ SOFTWARE.
 */
 
 using LoneEftDmaRadar.DMA;
+using LoneEftDmaRadar.UI.Misc;
 using System.Security.Cryptography;
 
 namespace LoneEftDmaRadar.Misc
@@ -78,7 +79,7 @@ namespace LoneEftDmaRadar.Misc
                 }
                 catch { }
             }
-            Debug.WriteLine(sb.ToString());
+            DebugLogger.LogDebug(sb.ToString());
             Environment.Exit(0);
         }
     }

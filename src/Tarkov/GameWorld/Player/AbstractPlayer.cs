@@ -34,6 +34,7 @@ using LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers;
 using LoneEftDmaRadar.Tarkov.Unity;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
+using LoneEftDmaRadar.UI.Misc;
 using LoneEftDmaRadar.UI.Radar.Maps;
 using LoneEftDmaRadar.UI.Radar.ViewModels;
 using LoneEftDmaRadar.UI.Skia;
@@ -133,7 +134,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"ERROR during Player Allocation for player @ 0x{playerBase.ToString("X")}: {ex}");
+                DebugLogger.LogDebug($"ERROR during Player Allocation for player @ 0x{playerBase.ToString("X")}: {ex}");
             }
         }
 
@@ -147,7 +148,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                 player = new ClientPlayer(playerBase);
             else
                 player = new ObservedPlayer(playerBase);
-            Debug.WriteLine($"Player '{player.Name}' allocated.");
+            DebugLogger.LogDebug($"Player '{player.Name}' allocated.");
             return player;
         }
 
@@ -500,7 +501,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                             }
                             catch (Exception ex) // Attempt to re-allocate Transform on error
                             {
-                                Debug.WriteLine($"ERROR getting Player '{Name}' SkeletonRoot Position: {ex}");
+                                DebugLogger.LogDebug($"ERROR getting Player '{Name}' SkeletonRoot Position: {ex}");
                                 var transform = new UnityTransform(SkeletonRoot.TransformInternal);
                                 SkeletonRoot = transform;
                             }
@@ -535,7 +536,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                         {
                             if (SkeletonRoot.VerticesAddr != verticesPtr) // check if any addr changed
                             {
-                                Debug.WriteLine($"WARNING - SkeletonRoot Transform has changed for Player '{Name}'");
+                                DebugLogger.LogDebug($"WARNING - SkeletonRoot Transform has changed for Player '{Name}'");
                                 var transform = new UnityTransform(SkeletonRoot.TransformInternal);
                                 SkeletonRoot = transform;
                             }
@@ -731,7 +732,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                     Name = "Bear",
                     Type = PlayerType.AIRaider
                 };
-            Debug.WriteLine($"Unknown Voice Line: {voiceLine}");
+            DebugLogger.LogDebug($"Unknown Voice Line: {voiceLine}");
             return new AIRole
             {
                 Name = "AI",
@@ -795,7 +796,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"WARNING! Player Draw Error: {ex}");
+                DebugLogger.LogDebug($"WARNING! Player Draw Error: {ex}");
             }
         }
 

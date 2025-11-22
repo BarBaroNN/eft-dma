@@ -30,6 +30,7 @@ using LoneEftDmaRadar.Misc.Services;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers;
 using LoneEftDmaRadar.Tarkov.Mono.Collections;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
+using LoneEftDmaRadar.UI.Misc;
 using LoneEftDmaRadar.UI.Radar.ViewModels;
 using LoneEftDmaRadar.Web.ProfileApi;
 using LoneEftDmaRadar.Web.ProfileApi.Schema;
@@ -220,7 +221,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                     {
                         var profileData = dto.ToProfileData();
                         Profile.Data = profileData;
-                        Debug.WriteLine($"[ObservedPlayer] Got Profile (Cached) '{acctIdLong}'!");
+                        DebugLogger.LogDebug($"[ObservedPlayer] Got Profile (Cached) '{acctIdLong}'!");
                     }
                     catch
                     {
@@ -365,7 +366,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"ERROR updating Health Status for '{Name}': {ex}");
+                DebugLogger.LogDebug($"ERROR updating Health Status for '{Name}': {ex}");
             }
         }
 

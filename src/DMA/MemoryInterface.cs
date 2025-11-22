@@ -27,6 +27,7 @@ SOFTWARE.
 */
 
 global using static LoneEftDmaRadar.DMA.MemoryInterface;
+using LoneEftDmaRadar.UI.Misc;
 
 namespace LoneEftDmaRadar.DMA
 {
@@ -37,7 +38,7 @@ namespace LoneEftDmaRadar.DMA
             await Task.Run(() =>
             {
                 Memory ??= new MemDMA();
-                Debug.WriteLine("DMA Initialized!");
+                DebugLogger.LogDebug("DMA Initialized!");
             });
         }
 

@@ -29,6 +29,7 @@ SOFTWARE.
 using Collections.Pooled;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.Tarkov.Mono.Collections;
+using LoneEftDmaRadar.UI.Misc;
 
 namespace LoneEftDmaRadar.Tarkov.GameWorld
 {
@@ -82,7 +83,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"CRITICAL ERROR - RegisteredPlayers Loop FAILED: {ex}");
+                DebugLogger.LogDebug($"CRITICAL ERROR - RegisteredPlayers Loop FAILED: {ex}");
             }
         }
 
@@ -125,7 +126,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
             {
                 var btr = new BtrPlayer(btrView, btrPlayerBase);
                 _players[btrPlayerBase] = btr;
-                Debug.WriteLine("BTR Allocated!");
+                DebugLogger.LogDebug("BTR Allocated!");
             }
         }
 

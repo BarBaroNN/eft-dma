@@ -33,6 +33,7 @@ using LoneEftDmaRadar.Tarkov.GameWorld.Explosives;
 using LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
+using LoneEftDmaRadar.UI.Misc;
 using VmmSharpEx.Options;
 
 namespace LoneEftDmaRadar.Tarkov.GameWorld
@@ -141,12 +142,12 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
                 try
                 {
                     var instance = GetLocalGameWorld();
-                    Debug.WriteLine("Raid has started!");
+                    DebugLogger.LogDebug("Raid has started!");
                     return instance;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"ERROR Instantiating Game Instance: {ex}");
+                    DebugLogger.LogDebug($"ERROR Instantiating Game Instance: {ex}");
                 }
                 finally
                 {
@@ -194,12 +195,12 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
             }
             catch (OperationCanceledException ex) // Raid Ended
             {
-                Debug.WriteLine(ex.Message);
+                DebugLogger.LogDebug(ex.Message);
                 Dispose();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"CRITICAL ERROR - Raid ended due to unhandled exception: {ex}");
+                DebugLogger.LogDebug($"CRITICAL ERROR - Raid ended due to unhandled exception: {ex}");
                 throw;
             }
         }
@@ -302,7 +303,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"CRITICAL ERROR - ValidatePlayerTransforms Loop FAILED: {ex}");
+                DebugLogger.LogDebug($"CRITICAL ERROR - ValidatePlayerTransforms Loop FAILED: {ex}");
             }
         }
 
@@ -337,7 +338,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"ERROR Allocating BTR: {ex}");
+                DebugLogger.LogDebug($"ERROR Allocating BTR: {ex}");
             }
         }
 

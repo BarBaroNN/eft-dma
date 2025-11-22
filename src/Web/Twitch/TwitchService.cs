@@ -27,6 +27,7 @@ SOFTWARE.
 */
 
 using LiteDB;
+using LoneEftDmaRadar.UI.Misc;
 using System.Text.RegularExpressions;
 using TwitchLib.Api;
 using TwitchLib.Api.Core;
@@ -100,7 +101,7 @@ namespace LoneEftDmaRadar.Web.Twitch
                 if (replacedName is null)
                     return null;
 
-                Debug.WriteLine($"[Twitch] Checking {username}...");
+                DebugLogger.LogDebug($"[Twitch] Checking {username}...");
                 string channel = await LookupTwitchApiAsync(replacedName);
                 _cache[username] = new CachedTwitchEntry()
                 {

@@ -102,17 +102,7 @@ namespace LoneEftDmaRadar
                 VelopackApp.Build().Run();
                 _mutex = new Mutex(true, MUTEX_ID, out bool singleton);
                 if (!singleton)
-                {
-                    _mutex.Dispose();
-                    var thisProc = Process.GetCurrentProcess();
-                    foreach (var proc in 
-                        Process.GetProcessesByName(thisProc.ProcessName)
-                        .Where(p => p.Id != thisProc.Id))
-                    {
-                        proc.Kill(); // Kill any zombies
-                    }
-                    Environment.FailFast("Another instance is already running. Please restart the application.");
-                }
+                    throw new InvalidOperationException("The application is already running.");
                 Config = EftDmaConfig.Load();
                 ServiceProvider = BuildServiceProvider();
                 HttpClientFactory = ServiceProvider.GetRequiredService<IHttpClientFactory>();
@@ -216,10 +206,10 @@ namespace LoneEftDmaRadar
                                            EXECUTION_STATE.ES_DISPLAY_REQUIRED);
             var highPerformanceGuid = new Guid("8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c");
             if (PowerSetActiveScheme(IntPtr.Zero, ref highPerformanceGuid) != 0)
-                Debug.WriteLine("WARNING: Unable to set High Performance Power Plan");
+                DebugLogger.LogDebug("WARNING: Unable to set High Performance Power Plan");
             const uint timerResolutionMs = 5;
             if (TimeBeginPeriod(timerResolutionMs) != 0)
-                Debug.WriteLine($"WARNING: Unable to set timer resolution to {timerResolutionMs}ms. This may cause performance issues.");
+                DebugLogger.LogDebug($"WARNING: Unable to set timer resolution to {timerResolutionMs}ms. This may cause performance issues.");
         }
 
         /// <summary>

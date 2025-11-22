@@ -28,6 +28,7 @@ SOFTWARE.
 
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers;
+using LoneEftDmaRadar.UI.Misc;
 using SkiaSharp.Views.WPF;
 
 namespace LoneEftDmaRadar.UI.Skia
@@ -84,7 +85,7 @@ namespace LoneEftDmaRadar.UI.Skia
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"CRITICAL AIMVIEW WIDGET RENDER ERROR: {ex}");
+                DebugLogger.LogDebug($"CRITICAL AIMVIEW WIDGET RENDER ERROR: {ex}");
             }
 
             _canvas.Flush();

@@ -33,6 +33,7 @@ using LoneEftDmaRadar.Tarkov.GameWorld.Explosives;
 using LoneEftDmaRadar.Tarkov.GameWorld.Loot;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.UI.Loot;
+using LoneEftDmaRadar.UI.Misc;
 using LoneEftDmaRadar.UI.Radar.Maps;
 using LoneEftDmaRadar.UI.Radar.Views;
 using LoneEftDmaRadar.UI.Skia;
@@ -395,7 +396,7 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
             }
             catch (Exception ex) // Log rendering errors
             {
-                Debug.WriteLine($"***** CRITICAL RENDER ERROR: {ex}");
+                DebugLogger.LogDebug($"***** CRITICAL RENDER ERROR: {ex}");
             }
         }
 

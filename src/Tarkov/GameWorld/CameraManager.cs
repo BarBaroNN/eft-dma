@@ -17,11 +17,10 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
 
         public float FOV { get; private set; } = 60f;
         public float AspectRatio { get; private set; } = 1.777f;
+        public float ZoomLevel { get; private set; } = 1f;
         public Matrix4x4 ViewMatrix { get; private set; } = Matrix4x4.Identity;
         public bool IsADS { get; private set; }
         public bool IsScoped { get; private set; }
-
-        private const uint CameraObjectManager = 0x19EE080;
 
         /// <summary>
         /// Resets the camera manager state. Call this when leaving a raid to clean up stale data.
@@ -43,7 +42,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
             {
                 DebugLogger.LogDebug("CameraManager: Starting initialization...");
                 
-                var addr = Memory.ReadPtr(Memory.UnityBase + CameraObjectManager, false);
+                var addr = Memory.ReadPtr(Memory.UnityBase + UnitySDK.UnityOffsets.CameraObjectManager, false);
                 if (addr == 0)
                 {
                     DebugLogger.LogWarning("CameraManager: Failed to read CameraObjectManager address");
@@ -62,11 +61,11 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
 
                 for (int i = 0; i < 100; i++)
                 {
-                    var camera = Memory.ReadPtr(cameraManager + (ulong)i * 0x8, false);
+                    var camera = Memory.ReadPtr(cameraManager + (ulong)i * 0x10, false);
                     if (camera == 0)
                         continue;
 
-                    Span<uint> nameChain = stackalloc uint[] { 0x48, 0x78 };
+                    Span<uint> nameChain = stackalloc uint[] { 0x50, 0x80 };
                     var namePtr = Memory.ReadPtrChain(camera, false, nameChain);
                     
                     if (namePtr == 0)
@@ -92,12 +91,12 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
                     if (name == "FPS Camera")
                     {
                         _fpsCamera = camera;
-                        DebugLogger.LogInfo($"CameraManager: ✓ Found FPS Camera at 0x{camera:X}");
+                        DebugLogger.LogInfo($"CameraManager: Found FPS Camera at 0x{camera:X}");
                     }
                     else if (name == "BaseOpticCamera(Clone)")
                     {
                         _opticCamera = camera;
-                        DebugLogger.LogInfo($"CameraManager: ✓ Found BaseOpticCamera at 0x{camera:X}");
+                        DebugLogger.LogInfo($"CameraManager: Found BaseOpticCamera at 0x{camera:X}");
                     }
 
                 if (_fpsCamera != 0 && _opticCamera != 0)
@@ -141,10 +140,16 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
                 if (OpticCameraActive)
                 {
                     var opticsPtr = Memory.ReadPtr(localPlayer.PWA + Offsets.ProceduralWeaponAnimation._optics);
+                    if (opticsPtr == 0)
+                        return false;
+
                     using var optics = MemList<MemPointer>.Get(opticsPtr);
                     if (optics.Count > 0)
                     {
                         var pSightComponent = Memory.ReadPtr(optics[0] + Offsets.SightNBone.Mod);
+                        if (pSightComponent == 0)
+                            return false;
+
                         var sightComponent = Memory.ReadValue<SightComponent>(pSightComponent);
 
                         if (sightComponent.ScopeZoomValue != 0f)
@@ -154,9 +159,9 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
                 }
                 return false;
             }
-            catch (Exception ex)
+            catch
             {
-                DebugLogger.LogDebug($"CheckIfScoped() ERROR: {ex}");
+                // Silently fail - this is expected when switching weapons/sights rapidly
                 return false;
             }
         }
@@ -188,16 +193,17 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
 
                 if (useOpticCamera)
                 {
-                    // When scoped with PiP optic, use optic camera's ViewMatrix
+                    // When scoped with PiP optic, use optic camera's ViewMatrix/FOV/Aspect/Zoom
                     ViewMatrix = Memory.ReadValue<Matrix4x4>(_opticCamera + UnitySDK.UnityOffsets.Camera.ViewMatrix, false);
-                    FOV = Memory.ReadValue<float>(_fpsCamera + UnitySDK.UnityOffsets.Camera.FOV, false);
-                    AspectRatio = 1.777778f;
+                    FOV = Memory.ReadValue<float>(_opticCamera + UnitySDK.UnityOffsets.Camera.FOV, false);
+                    AspectRatio = Memory.ReadValue<float>(_opticCamera + UnitySDK.UnityOffsets.Camera.AspectRatio, false);
+                    ZoomLevel = Memory.ReadValue<float>(_opticCamera + UnitySDK.UnityOffsets.Camera.ZoomLevel, false);
 
                     _updateCounter++;
                     if (_updateCounter % 300 == 0)
                     {
-                        float opticFOV = Memory.ReadValue<float>(_opticCamera + UnitySDK.UnityOffsets.Camera.FOV, false);
-                        DebugLogger.LogDebug($"CameraManager: SCOPED (PiP) - ViewMatrix from Optic, FOV={FOV:F2} from FPS, OpticFOV={opticFOV:F2}");
+                        float fpsFov = Memory.ReadValue<float>(_fpsCamera + UnitySDK.UnityOffsets.Camera.FOV, false);
+                        DebugLogger.LogDebug($"CameraManager: SCOPED (PiP) - ViewMatrix/FOV from Optic, FPS_FOV={fpsFov:F2}, AspectRatio={AspectRatio:F3}, Zoom={ZoomLevel:F2}x");
                     }
                 }
                 else
@@ -205,12 +211,13 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
                     // Regular FPS camera for hipfire and iron sights
                     ViewMatrix = Memory.ReadValue<Matrix4x4>(_fpsCamera + UnitySDK.UnityOffsets.Camera.ViewMatrix, false);
                     FOV = Memory.ReadValue<float>(_fpsCamera + UnitySDK.UnityOffsets.Camera.FOV, false);
-                    AspectRatio = 1.777778f;
+                    AspectRatio = Memory.ReadValue<float>(_fpsCamera + UnitySDK.UnityOffsets.Camera.AspectRatio, false);
+                    ZoomLevel = Memory.ReadValue<float>(_fpsCamera + UnitySDK.UnityOffsets.Camera.ZoomLevel, false);
 
                     _updateCounter++;
                     if (_updateCounter % 300 == 0)
                     {
-                        DebugLogger.LogDebug($"CameraManager: Using FPS Camera - IsADS={IsADS}, IsScoped={IsScoped}, FOV={FOV:F2}");
+                        DebugLogger.LogDebug($"CameraManager: Using FPS Camera - IsADS={IsADS}, IsScoped={IsScoped}, FOV={FOV:F2}, AspectRatio={AspectRatio:F3}, Zoom={ZoomLevel:F2}x");
                     }
                 }
 
@@ -218,6 +225,17 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
                 {
                     DebugLogger.LogWarning($"CameraManager: Invalid FOV {FOV:F2}, resetting to 60");
                     FOV = 60f;
+                }
+
+                if (AspectRatio < 0.5f || AspectRatio > 5f)
+                {
+                    DebugLogger.LogWarning($"CameraManager: Invalid AspectRatio {AspectRatio:F3}, resetting to 16:9 (1.778)");
+                    AspectRatio = 1.777778f;
+                }
+
+                if (ZoomLevel < 0.1f || ZoomLevel > 100f)
+                {
+                    ZoomLevel = 1f;
                 }
             }
             catch (Exception ex)
@@ -267,4 +285,3 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld
         }
     }
 }
-

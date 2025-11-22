@@ -31,6 +31,7 @@ using LoneEftDmaRadar.Tarkov.Mono.Collections;
 using LoneEftDmaRadar.Tarkov.Unity;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
 using LoneEftDmaRadar.UI.Loot;
+using LoneEftDmaRadar.UI.Misc;
 
 namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers
 {
@@ -102,7 +103,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"CRITICAL ERROR - Failed to refresh loot: {ex}");
+                DebugLogger.LogDebug($"CRITICAL ERROR - Failed to refresh loot: {ex}");
             }
         }
 

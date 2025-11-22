@@ -35,6 +35,7 @@ using LoneEftDmaRadar.Tarkov.GameWorld.Explosives;
 using LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
+using LoneEftDmaRadar.UI.Misc;
 using VmmSharpEx;
 using VmmSharpEx.Extensions;
 using VmmSharpEx.Options;
@@ -88,7 +89,7 @@ namespace LoneEftDmaRadar.DMA
         {
             FpgaAlgo fpgaAlgo = App.Config.DMA.FpgaAlgo;
             bool useMemMap = App.Config.DMA.MemMapEnabled;
-            Debug.WriteLine("Initializing DMA...");
+            DebugLogger.LogDebug("Initializing DMA...");
             /// Check MemProcFS Versions...
             string vmmVersion = FileVersionInfo.GetVersionInfo("vmm.dll").FileVersion;
             string lcVersion = FileVersionInfo.GetVersionInfo("leechcore.dll").FileVersion;
@@ -107,7 +108,7 @@ namespace LoneEftDmaRadar.DMA
                 {
                     if (!File.Exists(_mmap))
                     {
-                        Debug.WriteLine("[DMA] No MemMap, attempting to generate...");
+                        DebugLogger.LogDebug("[DMA] No MemMap, attempting to generate...");
                         _vmm = new Vmm(args: initArgs)
                         {
                             EnableMemoryWriting = false
@@ -170,7 +171,7 @@ namespace LoneEftDmaRadar.DMA
         /// </summary>
         private void MemoryPrimaryWorker()
         {
-            Debug.WriteLine("Memory thread starting...");
+            DebugLogger.LogDebug("Memory thread starting...");
             while (MainWindow.Instance is null)
                 Thread.Sleep(1);
             while (true)
@@ -187,7 +188,7 @@ namespace LoneEftDmaRadar.DMA
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"FATAL ERROR on Memory Thread: {ex}");
+                    DebugLogger.LogDebug($"FATAL ERROR on Memory Thread: {ex}");
                     OnProcessStopped();
                     Thread.Sleep(1000);
                 }
@@ -204,7 +205,7 @@ namespace LoneEftDmaRadar.DMA
         /// </summary>
         private void RunStartupLoop()
         {
-            Debug.WriteLine("New Process Startup");
+            DebugLogger.LogDebug("New Process Startup");
             while (true) // Startup loop
             {
                 try
@@ -216,12 +217,12 @@ namespace LoneEftDmaRadar.DMA
                     this.Starting = true;
                     OnProcessStarting();
                     this.Ready = true;
-                    Debug.WriteLine("Process Startup [OK]");
+                    DebugLogger.LogDebug("Process Startup [OK]");
                     break;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Process Startup [FAIL]: {ex}");
+                    DebugLogger.LogDebug($"Process Startup [FAIL]: {ex}");
                     OnProcessStopped();
                     Thread.Sleep(1000);
                 }
@@ -246,7 +247,7 @@ namespace LoneEftDmaRadar.DMA
                         {
                             if (_restartRadar)
                             {
-                                Debug.WriteLine("Restarting Radar per User Request.");
+                                DebugLogger.LogDebug("Restarting Radar per User Request.");
                                 _restartRadar = false;
                                 break;
                             }
@@ -257,12 +258,12 @@ namespace LoneEftDmaRadar.DMA
                 }
                 catch (OperationCanceledException ex) // Process Closed
                 {
-                    Debug.WriteLine(ex.Message);
+                    DebugLogger.LogDebug(ex.Message);
                     break;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Unhandled Exception in Game Loop: {ex}");
+                    DebugLogger.LogDebug($"Unhandled Exception in Game Loop: {ex}");
                     break;
                 }
                 finally
